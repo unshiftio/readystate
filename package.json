@@ -34,6 +34,7 @@
     "url": "https://github.com/unshiftio/readystate/issues"
   },
   "homepage": "https://github.com/unshiftio/readystate",
+  "browser": "./browser.js",
   "devDependencies": {
     "assume": "0.0.x",
     "istanbul": "0.3.x",

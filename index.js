@@ -1,18 +1,11 @@
 'use strict';
 
-/**
- * Check if our current environment has reached the required state so we can
- * start manipulating the environment.
- *
- * @param {String} state The required state of the document.
- * @returns {Boolean}
- * @api public
- */
-function readyState(state) {
-  return true;
-}
-
 //
-// Expose the module.
+// We are loaded in a Node.js environment. There are no resources to wait upon
+// so we've got to manually advance it to the `complete` state. This ensures
+// that all callbacks and check return the correct results and we can start as
+// fast as possible with doing very important tasks.
 //
-module.exports = readyState;
+module
+  .exports = require('./readystate')
+  .change('complete');
