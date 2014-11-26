@@ -98,6 +98,19 @@ describe('readystate', function () {
           next();
         });
       });
+
+      it('is an async call', function (next) {
+        readystate.change('complete');
+
+        var called = false;
+
+        readystate[state](function changed() {
+          called = true;
+          next();
+        });
+
+        assume(called).is.false();
+      });
     });
   });
 

@@ -13,14 +13,18 @@
  */
 function generate(state) {
   return function proxy(fn, context) {
-    if (this.is(state)) {
-      fn.call(context, this.readyState);
+    var rs = this;
+
+    if (rs.is(state)) {
+      setTimeout(function () {
+        fn.call(context, rs.readyState);
+      }, 0);
     } else {
-      if (!this._events[state]) this._events[state] = [];
-      this._events[state].push({ fn: fn, context: context });
+      if (!rs._events[state]) rs._events[state] = [];
+      rs._events[state].push({ fn: fn, context: context });
     }
 
-    return this;
+    return rs;
   };
 }
 
@@ -72,28 +76,32 @@ for (var s = 0, state; s < RS.states.length; s++) {
 RS.prototype.change = function change(state) {
   if ('string' === typeof state) state = +RS[state.toUpperCase()] || 0;
 
-  var previously = this.readyState
-    , name, i = 0, j, listener;
+  var j
+    , name
+    , i = 0
+    , listener
+    , rs = this
+    , previously = rs.readyState;
 
-  if (previously >= state) return this;
+  if (previously >= state) return rs;
 
-  this.readyState = state;
+  rs.readyState = state;
 
   for (; i < RS.states.length; i++) {
     if (i > state) break;
     name = RS.states[i];
 
-    if (name in this._events) {
-      for (j = 0; j < this._events[name].length; j++) {
-        listener = this._events[name][j];
-        listener.fn.call(listener.context || this, previously);
+    if (name in rs._events) {
+      for (j = 0; j < rs._events[name].length; j++) {
+        listener = rs._events[name][j];
+        listener.fn.call(listener.context || rs, previously);
       }
 
-      delete this._events[name];
+      delete rs._events[name];
     }
   }
 
-  return this;
+  return rs;
 };
 
 /**
