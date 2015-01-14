@@ -74,7 +74,7 @@ for (var s = 0, state; s < RS.states.length; s++) {
  * @api private
  */
 RS.prototype.change = function change(state) {
-  if ('string' === typeof state) state = +RS[state.toUpperCase()] || 0;
+  state = this.clean(state, true);
 
   var j
     , name
@@ -112,9 +112,25 @@ RS.prototype.change = function change(state) {
  * @api public
  */
 RS.prototype.is = function is(state) {
-  if ('string' === typeof state) state = +RS[state.toUpperCase()] || 0;
+  return this.readyState >= this.clean(state, true);
+};
 
-  return this.readyState >= state;
+/**
+ * Transform a state to a number or toUpperCase.
+ *
+ * @param {Mixed} state State to transform.
+ * @param {Boolean} nr Change to number.
+ * @returns {Mixed}
+ * @api public
+ */
+RS.prototype.clean = function transform(state, nr) {
+  var type = typeof state;
+
+  if (nr) return 'number' !== type
+  ? +RS[state.toUpperCase()] || 0
+  : state;
+
+  return ('number' === type ? RS.states[state] : state).toUpperCase();
 };
 
 //

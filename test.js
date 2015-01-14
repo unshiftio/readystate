@@ -131,4 +131,22 @@ describe('readystate', function () {
       assume(readystate.is('complete')).is.true();
     });
   });
+
+  describe('#clean', function () {
+    it('is a function', function () {
+      assume(readystate.clean).is.a('function');
+    });
+
+    it('changes strings to numbers', function () {
+      assume(readystate.clean('unknown', true)).equals(1);
+      assume(readystate.clean('UNKNOWN', true)).equals(1);
+      assume(readystate.clean(1, true)).equals(1);
+    });
+
+    it('changes numbers to strings', function () {
+      assume(readystate.clean('unknown')).equals('UNKNOWN');
+      assume(readystate.clean('UNKNOWN')).equals('UNKNOWN');
+      assume(readystate.clean(1)).equals('UNKNOWN');
+    });
+  });
 });
