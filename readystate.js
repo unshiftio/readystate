@@ -141,7 +141,7 @@ RS.prototype.clean = function transform(state, nr) {
  * @returns {Function} rs so that calls can be chained.
  * @api public
  */
-RS.prototype.removeAllListeners = function() {
+RS.prototype.removeAllListeners = function removeAllListeners() {
   this._events = {};
   return this;
 }

@@ -80,6 +80,14 @@ readystate.loading(function () {
 }, 'foo');
 ```
 
+### readystate.removeAllListeners
+
+Remove all previously assigned listeners.
+
+```js
+readystate.removeAllListeners();
+```
+
 ### readystate.readystate
 
 **Please note, this is a private property**
