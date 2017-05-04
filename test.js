@@ -149,4 +149,27 @@ describe('readystate', function () {
       assume(readystate.clean(1)).equals('UNKNOWN');
     });
   });
+
+  describe('#removeAllListeners', function () {
+    it('is a function', function () {
+      assume(readystate.removeAllListeners).is.a('function');
+    });
+
+    it('does not react to events anymore when all have been removed', function (next) {
+      var interactiveReached = false;
+
+      readystate.interactive(function () {
+        interactiveReached = true
+      });
+
+      readystate
+        .removeAllListeners()
+        .change('interactive');
+
+      setTimeout(function() {
+        assume(interactiveReached).is.false();
+        next();
+      }, 20)
+    });
+  });
 });

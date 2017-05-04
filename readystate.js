@@ -133,6 +133,19 @@ RS.prototype.clean = function transform(state, nr) {
   return ('number' === type ? RS.states[state] : state).toUpperCase();
 };
 
+/**
+ * Removes all event listeners. Useful when you want to unload readystatechange
+ * completely so that it won't react to any events anymore. See
+ * https://github.com/unshiftio/readystate/issues/8
+ *
+ * @returns {Function} rs so that calls can be chained.
+ * @api public
+ */
+RS.prototype.removeAllListeners = function() {
+  this._events = {};
+  return this;
+}
+
 //
 // Expose the module.
 //
