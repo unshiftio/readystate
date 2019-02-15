@@ -4,15 +4,17 @@ var readystate = module.exports = require('./readystate')
   , win = (new Function('return this'))()
   , complete = 'complete'
   , root = true
-  , doc = win.document
-  , html = doc.documentElement;
+  , doc = win ? win.document : null
+  , html = doc ? doc.documentElement : null
+  , docReadyState = function () { return doc ? doc.readyState : null; }
 
 (function wrapper() {
   //
   // Bail out early if the document is already fully loaded. This means that this
   // script is loaded after the onload event.
   //
-  if (complete === doc.readyState) {
+
+  if (complete === docReadyState()) {
     return readystate.change(complete);
   }
 
@@ -21,17 +23,18 @@ var readystate = module.exports = require('./readystate')
   // with. Old versions of Internet Explorer do not support the addEventListener
   // interface so we can also safely assume that we need to fall back to polling.
   //
-  var modern = !!doc.addEventListener
+  var modern = doc && !!doc.addEventListener
     , prefix = modern ? '' : 'on'
     , on = modern ? 'addEventListener' : 'attachEvent'
-    , off = modern ? 'removeEventListener' : 'detachEvent';
+    , off = modern ? 'removeEventListener' : 'detachEvent'
+    , doScroll = html ? html.doScroll : null;
 
-  if (!modern && 'function' === typeof html.doScroll) {
+  if (!modern && 'function' === typeof doScroll) {
     try { root = !win.frameElement; }
     catch (e) {}
 
     if (root) (function polling() {
-      try { html.doScroll('left'); }
+      try { doScroll('left'); }
       catch (e) { return setTimeout(polling, 50); }
 
       readystate.change('interactive');
@@ -48,8 +51,8 @@ var readystate = module.exports = require('./readystate')
     evt = evt || win.event;
 
     if ('readystatechange' === evt.type) {
-      readystate.change(doc.readyState);
-      if (complete !== doc.readyState) return;
+      readystate.change(docReadyState());
+      if (complete !== docReadyState()) return;
     }
 
     if ('load' === evt.type) readystate.change('complete');
@@ -68,4 +71,3 @@ var readystate = module.exports = require('./readystate')
   doc[on](prefix +'readystatechange', change, false);
   win[on](prefix +'load', change, false);
 } ());
-
