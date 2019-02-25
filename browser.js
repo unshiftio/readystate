@@ -6,7 +6,7 @@ var readystate = module.exports = require('./readystate')
   , root = true
   , doc = win ? win.document : null
   , html = doc ? doc.documentElement : null
-  , docReadyState = function () { return doc ? doc.readyState : null; }
+  , docReadyState = function () { return doc ? doc.readyState : null; };
 
 (function wrapper() {
   //
